@@ -18,7 +18,7 @@ GenDG <- function(listID, type,  DGList) {  #Currently set to 1990-2000 will bec
 # Reading County Housing Units data, with one year projection and Census estimate
  
 # 1990-2000
-f.ctyDG90 <- read_excel("County Housing Units.xlsx", sheet=1) %>%
+f.ctyDG90 <- read_excel("data/County Housing Units.xlsx", sheet=1) %>%
   select(CountyFIPS:Thu00x) %>%
   filter(CountyFIPS == ctyfips) %>%
   gather(HU, value, Thu90:Thu00x, factor_key=TRUE) %>%
@@ -46,7 +46,7 @@ f.ctyDG90 <- inner_join(f.ctyYr90, f.ctyConst90, by="CountyFIPS") %>%
   select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
 
 # 2000-2010
-f.ctyDG00 <- read_excel("County Housing Units.xlsx", sheet=2) %>%
+f.ctyDG00 <- read_excel("data/County Housing Units.xlsx", sheet=2) %>%
   select(CountyFIPS:Thu10x) %>%
   filter(CountyFIPS == ctyfips) %>%
   gather(HU, value, Thu00:Thu10x, factor_key=TRUE) %>%
