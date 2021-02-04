@@ -4,6 +4,7 @@
 
 rm(list = ls())
 library(tidyverse, quietly=TRUE)
+library(plyr)
 library(readxl, quietly=TRUE)
 library(scales, quietly=TRUE)
 library(RPostgreSQL)
@@ -26,6 +27,7 @@ source("R/percent.R")
 source("R/popPlace.R")
 source("R/simpleCap.R")
 source("R/NumFmt.R")
+source("R/rangeVal.R")
 
 # Set up database pool 1/23/19
 
