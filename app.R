@@ -25,7 +25,7 @@ source("R/listTofips.R")
 source("R/percent.R")
 source("R/popPlace.R")
 source("R/simpleCap.R")
-
+source("R/NumFmt.R")
 
 # Set up database pool 1/23/19
 
