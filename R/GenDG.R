@@ -18,6 +18,7 @@ GenDG <- function(listID, type,  DGList) {  #Currently set to 1990-2000 will bec
 # Reading County Housing Units data, with one year projection and Census estimate
  
 # 1990-2000
+if(ctyfips != "014") { 
 f.ctyDG90 <- read_excel("data/County Housing Units.xlsx", sheet=1) %>%
   select(CountyFIPS:Thu00x) %>%
   filter(CountyFIPS == ctyfips) %>%
@@ -50,6 +51,7 @@ f.ctyDG90 <- inner_join(f.ctyYr90, f.ctyConst90, by="CountyFIPS") %>%
          DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
   ) %>%
   select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
+}
 
 # 2000-2010
 f.ctyDG00 <- read_excel("data/County Housing Units.xlsx", sheet=2) %>%
@@ -86,8 +88,12 @@ f.ctyDG00 <- inner_join(f.ctyYr00, f.ctyConst00, by="CountyFIPS") %>%
   select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
 
 # Combining files
+if(ctyfips  != "014") {
+  f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00[2:11,])
+} else {
+  f.ctyDGFIN <-f.ctyDG00
+}
 
-f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00[2:11,])
 
 
 # Titles
