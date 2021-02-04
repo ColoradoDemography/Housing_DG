@@ -41,9 +41,15 @@ f.ctyDG90 <- inner_join(f.ctyYr90, f.ctyConst90, by="CountyFIPS") %>%
          DG_2 = Q_t + ((P_10 - Q_10)*t)/10,
          DG_3 = Q_t * ((((10-t)*Q_10) + (t * P_10))/(10 * Q_10)),
          DG_4 = (10 * P_10 * Q_t)/(((10 - t)* P_10) + (t * Q_10)),
-         DG_6 = Q_t * ((P_10/Q_10)^(t/10))
+         DG_6 = Q_t * ((P_10/Q_10)^(t/10)),
+         Q_t_txt = paste0("Total Housing Units<br>",YEAR," ",NumFmt(Q_t)),
+         DG_1_txt =paste0("Das Gupta 1<br>",YEAR," ",NumFmt(DG_1)),
+         DG_2_txt =paste0("Das Gupta 2<br>",YEAR," ",NumFmt(DG_2)),
+         DG_3_txt =paste0("Das Gupta 3<br>",YEAR," ",NumFmt(DG_3)),
+         DG_4_txt =paste0("Das Gupta 4<br>",YEAR," ",NumFmt(DG_4)),
+         DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
   ) %>%
-  select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
+  select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
 
 # 2000-2010
 f.ctyDG00 <- read_excel("data/County Housing Units.xlsx", sheet=2) %>%
@@ -69,9 +75,15 @@ f.ctyDG00 <- inner_join(f.ctyYr00, f.ctyConst00, by="CountyFIPS") %>%
          DG_2 = Q_t + ((P_10 - Q_10)*t)/10,
          DG_3 = Q_t * ((((10-t)*Q_10) + (t * P_10))/(10 * Q_10)),
          DG_4 = (10 * P_10 * Q_t)/(((10 - t)* P_10) + (t * Q_10)),
-         DG_6 = Q_t * ((P_10/Q_10)^(t/10))
+         DG_6 = Q_t * ((P_10/Q_10)^(t/10)),
+         Q_t_txt = paste0("Total Housing Units<br>",YEAR," ",NumFmt(Q_t)),
+         DG_1_txt =paste0("Das Gupta 1<br>",YEAR," ",NumFmt(DG_1)),
+         DG_2_txt =paste0("Das Gupta 2<br>",YEAR," ",NumFmt(DG_2)),
+         DG_3_txt =paste0("Das Gupta 3<br>",YEAR," ",NumFmt(DG_3)),
+         DG_4_txt =paste0("Das Gupta 4<br>",YEAR," ",NumFmt(DG_4)),
+         DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
   ) %>%
-  select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
+  select(CountyFIPS, Area, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
 
 # Combining files
 
@@ -98,7 +110,7 @@ if(type == "Persons Per household") {
 lineCh <- plot_ly(f.ctyDGFIN, x = ~YEAR, y = ~Q_t, type = 'scatter', mode = 'lines+markers',
                   line = list(color = 'rgb(0,0,0)'),
                   marker = list(color = 'rgb(0,0,0)'),
-                  name = seriesName)    %>% 
+                  name = seriesName,text = ~Q_t_txt, hoverinfo = 'text')    %>% 
   config(
     toImageButtonOptions = list(
       format = "png",
@@ -110,35 +122,35 @@ if("DG_1" %in% DGList) {
   lineCh <- lineCh %>% add_trace(y = ~DG_1, type = 'scatter', mode = 'lines+markers',
                                  line = list(color = 'rgb(0,0,153)'),
                                  marker = list(color = 'rgb(0,0,153)'),
-                                 name = "Das Gupta 1")
+                                 name = "Das Gupta 1",text = ~DG_1_txt, hoverinfo = 'text')
 }
 
 if("DG_2" %in% DGList) {
 lineCh <- lineCh %>% add_trace(y = ~DG_2, type = 'scatter', mode = 'lines+markers',
                                line = list(color = 'rgb(0,153,0)'),
                                marker = list(color = 'rgb(0,152,0)'),
-                               name = "Das Gupta 2")
+                               name = "Das Gupta 2",text = ~DG_2_txt, hoverinfo = 'text')
 }
 
 if("DG_3" %in% DGList) {
 lineCh <- lineCh %>% add_trace(y = ~DG_3, type = 'scatter', mode = 'lines+markers',
                                line = list(color = 'rgb(102,102,0)'),
                                marker = list(color = 'rgb(102,102,0)'),
-                               name = "Das Gupta 3")
+                               name = "Das Gupta 3",text = ~DG_3_txt, hoverinfo = 'text')
 }
 
 if("DG_4" %in% DGList) {
 lineCh <- lineCh %>% add_trace(y = ~DG_4, type = 'scatter', mode = 'lines+markers',
                                line = list(color = 'rgb(204,102,0)'),
                                marker = list(color = 'rgb(204,102,0)'),
-                               name = "Das Gupta 4")
+                               name = "Das Gupta 4",text = ~DG_4_txt, hoverinfo = 'text')
 }
 
 if("DG_6" %in% DGList) {
 lineCh <- lineCh %>% add_trace(y = ~DG_6, type = 'scatter', mode = 'lines+markers',
                                line = list(color = 'rgb(255,0,0)'),
                                marker = list(color = 'rgb(255,0,0)'),
-                               name = "Das Gupta 6")
+                               name = "Das Gupta 6",text = ~DG_6_txt, hoverinfo = 'text')
 }
 
 lineCh <- lineCh %>% layout(autosize = T,
