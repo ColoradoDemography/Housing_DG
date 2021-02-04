@@ -94,6 +94,20 @@ if(ctyfips  != "014") {
   f.ctyDGFIN <-f.ctyDG00
 }
 
+# Creating Tick Ranges Year axis
+minYear <- min(f.ctyDGFIN$YEAR)
+
+valRange <- as.data.frame(rangeVal(f.ctyDGFIN$Q_t, f.ctyDGFIN$DG_1, f.ctyDGFIN$DG_2, f.ctyDGFIN$DG_3, f.ctyDGFIN$DG_4, f.ctyDGFIN$DG_6))
+
+if(valRange$max - valRange$min < 2000) {
+  valRange <- valRange %>%
+    mutate(min = plyr::round_any(min, 100, f = ceiling), 
+           range = plyr::round_any((max - min)/10, 100, f = ceiling))
+} else {
+  valRange <- valRange %>%
+    mutate(min = plyr::round_any(min, 1000, f = ceiling), 
+           range = plyr::round_any((max - min)/10, 1000, f = ceiling))
+}
 
 
 # Titles
@@ -170,7 +184,9 @@ lineCh <- lineCh %>% layout(autosize = T,
                                          showticklabels = TRUE,
                                          tickcolor = 'rgb(127,127,127)',
                                          ticks = 'outside',
-                                         zeroline = FALSE),
+                                         zeroline = FALSE,
+                                         tick0 = minYear,
+                                         dtick = 2),
                             yaxis = list(title = "Housing Units",
                                          gridcolor = 'rgb(255,255,255)',
                                          showgrid = TRUE,
@@ -178,7 +194,10 @@ lineCh <- lineCh %>% layout(autosize = T,
                                          showticklabels = TRUE,
                                          tickcolor = 'rgb(127,127,127)',
                                          ticks = 'outside',
-                                         zeroline = FALSE),
+                                         zeroline = FALSE,
+                                         tick0 = valRange$min,
+                                         dtick = valRange$range,
+                                         tickformat = ",d"),
                             legend = list(legend = list(x = 100, y = 0.5)))
 
 
