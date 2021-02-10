@@ -49,6 +49,7 @@ if(type == "Total Housing Units") {
 if(plfips == "") { 
 # 1990-2000
 if(ctyfips != "014") { 
+
 f.ctyDG90 <- indata90_00 %>%
   select(varSel90_00) %>%
   filter(CountyFIPS == ctyfips) %>% filter(PlaceFIPS == "00000") %>%
@@ -72,15 +73,10 @@ f.ctyDG90 <- inner_join(f.ctyYr90, f.ctyConst90, by="CountyFIPS") %>%
          DG_2 = Q_t + ((P_10 - Q_10)*t)/10,
          DG_3 = Q_t * ((((10-t)*Q_10) + (t * P_10))/(10 * Q_10)),
          DG_4 = (10 * P_10 * Q_t)/(((10 - t)* P_10) + (t * Q_10)),
-         DG_6 = Q_t * ((P_10/Q_10)^(t/10)),
-         Q_t_txt = paste0(type,"<br>",YEAR," ",NumFmt(Q_t)),
-         DG_1_txt =paste0("Das Gupta 1<br>",YEAR," ",NumFmt(DG_1)),
-         DG_2_txt =paste0("Das Gupta 2<br>",YEAR," ",NumFmt(DG_2)),
-         DG_3_txt =paste0("Das Gupta 3<br>",YEAR," ",NumFmt(DG_3)),
-         DG_4_txt =paste0("Das Gupta 4<br>",YEAR," ",NumFmt(DG_4)),
-         DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
+         DG_6 = Q_t * ((P_10/Q_10)^(t/10))
   ) %>%
-  select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
+  select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
+
 }
 
 # 2000-2010
@@ -107,15 +103,9 @@ f.ctyDG00 <- inner_join(f.ctyYr00, f.ctyConst00, by="CountyFIPS") %>%
          DG_2 = Q_t + ((P_10 - Q_10)*t)/10,
          DG_3 = Q_t * ((((10-t)*Q_10) + (t * P_10))/(10 * Q_10)),
          DG_4 = (10 * P_10 * Q_t)/(((10 - t)* P_10) + (t * Q_10)),
-         DG_6 = Q_t * ((P_10/Q_10)^(t/10)),
-         Q_t_txt = paste0(type,"<br>",YEAR," ",NumFmt(Q_t)),
-         DG_1_txt =paste0("Das Gupta 1<br>",YEAR," ",NumFmt(DG_1)),
-         DG_2_txt =paste0("Das Gupta 2<br>",YEAR," ",NumFmt(DG_2)),
-         DG_3_txt =paste0("Das Gupta 3<br>",YEAR," ",NumFmt(DG_3)),
-         DG_4_txt =paste0("Das Gupta 4<br>",YEAR," ",NumFmt(DG_4)),
-         DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
-  ) %>%
-  select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
+         DG_6 = Q_t * ((P_10/Q_10)^(t/10)) ) %>%
+  select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
+
 
 # Combining files
 if(ctyfips  != "014") {
@@ -188,15 +178,10 @@ if(ctyfips  != "014") {
              DG_2 = Q_t + ((P_10 - Q_10)*t)/10,
              DG_3 = Q_t * ((((10-t)*Q_10) + (t * P_10))/(10 * Q_10)),
              DG_4 = (10 * P_10 * Q_t)/(((10 - t)* P_10) + (t * Q_10)),
-             DG_6 = Q_t * ((P_10/Q_10)^(t/10)),
-             Q_t_txt = paste0(type,"<br>",YEAR," ",NumFmt(Q_t)),
-             DG_1_txt =paste0("Das Gupta 1<br>",YEAR," ",NumFmt(DG_1)),
-             DG_2_txt =paste0("Das Gupta 2<br>",YEAR," ",NumFmt(DG_2)),
-             DG_3_txt =paste0("Das Gupta 3<br>",YEAR," ",NumFmt(DG_3)),
-             DG_4_txt =paste0("Das Gupta 4<br>",YEAR," ",NumFmt(DG_4)),
-             DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
-      ) %>%
-      select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
+             DG_6 = Q_t * ((P_10/Q_10)^(t/10))) %>%
+      select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
+    
+ 
   }  # CountyFIPS != 014
   
   # 2000-2010
@@ -232,15 +217,9 @@ if(ctyfips  != "014") {
            DG_2 = Q_t + ((P_10 - Q_10)*t)/10,
            DG_3 = Q_t * ((((10-t)*Q_10) + (t * P_10))/(10 * Q_10)),
            DG_4 = (10 * P_10 * Q_t)/(((10 - t)* P_10) + (t * Q_10)),
-           DG_6 = Q_t * ((P_10/Q_10)^(t/10)),
-           Q_t_txt = paste0(type,"<br>",YEAR," ",NumFmt(Q_t)),
-           DG_1_txt =paste0("Das Gupta 1<br>",YEAR," ",NumFmt(DG_1)),
-           DG_2_txt =paste0("Das Gupta 2<br>",YEAR," ",NumFmt(DG_2)),
-           DG_3_txt =paste0("Das Gupta 3<br>",YEAR," ",NumFmt(DG_3)),
-           DG_4_txt =paste0("Das Gupta 4<br>",YEAR," ",NumFmt(DG_4)),
-           DG_6_txt =paste0("Das Gupta 6<br>",YEAR," ",NumFmt(DG_6))
-    ) %>%
-    select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6_txt)
+           DG_6 = Q_t * ((P_10/Q_10)^(t/10))) %>%
+    select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
+ 
   
   # Combining files
   if(ctyfips  != "014") {
@@ -250,19 +229,36 @@ if(ctyfips  != "014") {
   }
 }   # Municipalities
 
+  
+
+  f.ctyDGFIN <- as.data.frame(f.ctyDGFIN)
+  
+  if(type == "Persons Per Household") {
+    f.ctyDGFIN$Q_t_txt  <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$Q_t,digits=5))
+    f.ctyDGFIN$DG_1_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_1,digits=5))
+    f.ctyDGFIN$DG_2_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_2,digits=5))
+    f.ctyDGFIN$DG_3_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_3,digits=5))
+    f.ctyDGFIN$DG_4_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_4,digits=5))
+    f.ctyDGFIN$DG_6_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_6,digits=5))
+  } else {
+    f.ctyDGFIN$Q_t_txt  <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$Q_t))
+    f.ctyDGFIN$DG_1_txt <- paste0("Das Gupta 1<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_1))
+    f.ctyDGFIN$DG_2_txt <- paste0("Das Gupta 2<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_2))
+    f.ctyDGFIN$DG_3_txt <- paste0("Das Gupta 3<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_3))
+    f.ctyDGFIN$DG_4_txt <- paste0("Das Gupta 4<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_4))
+    f.ctyDGFIN$DG_6_txt <- paste0("Das Gupta 6<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_6))
+    }
+   
 # Creating Tick Ranges Year axis
+
 minYear <- min(f.ctyDGFIN$YEAR)
 
 valRange <- as.data.frame(rangeVal(f.ctyDGFIN$Q_t, f.ctyDGFIN$DG_1, f.ctyDGFIN$DG_2, f.ctyDGFIN$DG_3, f.ctyDGFIN$DG_4, f.ctyDGFIN$DG_6))
 
-if(valRange$max - valRange$min < 2000) {
-  valRange <- valRange %>%
-    mutate(min = plyr::round_any(min, 100, f = ceiling), 
-           range = plyr::round_any((max - min)/10, 100, f = ceiling))
+if(type == "Persons Per Household") {
+  valRange$range <- (valRange$max - valRange$min)/10
 } else {
-  valRange <- valRange %>%
-    mutate(min = plyr::round_any(min, 1000, f = ceiling), 
-           range = plyr::round_any((max - min)/10, 1000, f = ceiling))
+  valRange$range <- round((valRange$max - valRange$min)/10,digits=0)
 }
 
 
@@ -341,32 +337,69 @@ lineCh <- lineCh %>% add_trace(y = ~DG_6, type = 'scatter', mode = 'lines+marker
                                name = "Das Gupta 6",text = ~DG_6_txt, hoverinfo = 'text')
 }
 
-lineCh <- lineCh %>% layout(autosize = T,
-                            title = total_tit,
-                            paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
-                            hoverlabel = "right",
-                            xaxis = list(title = "Year",
-                                         gridcolor = 'rgb(255,255,255)',
-                                         showgrid = TRUE,
-                                         showline = FALSE,
-                                         showticklabels = TRUE,
-                                         tickcolor = 'rgb(127,127,127)',
-                                         ticks = 'outside',
-                                         zeroline = FALSE,
-                                         tick0 = minYear,
-                                         dtick = 2),
-                            yaxis = list(title = seriesName,
-                                         gridcolor = 'rgb(255,255,255)',
-                                         showgrid = TRUE,
-                                         showline = FALSE,
-                                         showticklabels = TRUE,
-                                         tickcolor = 'rgb(127,127,127)',
-                                         ticks = 'outside',
-                                         zeroline = FALSE,
-                                         tick0 = valRange$min,
-                                         dtick = valRange$range,
-                                         tickformat = ",d"),
-                            legend = list(legend = list(x = 100, y = 0.5)))
+if(type == "Persons Per Household") {
+  lineCh <- lineCh %>% layout(autosize = T,
+                              title = total_tit,
+                              paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
+                              hoverlabel = "right",
+                              xaxis = list(title = "Year",
+                                           gridcolor = 'rgb(255,255,255)',
+                                           showgrid = TRUE,
+                                           showline = FALSE,
+                                           showticklabels = TRUE,
+                                           tickcolor = 'rgb(127,127,127)',
+                                           ticks = 'outside',
+                                           zeroline = FALSE,
+                                           tick0 = minYear,
+                                           dtick = 2),
+                              yaxis = list(range = c(valRange$min, valRange$max),
+                                           title = seriesName,
+                                           gridcolor = 'rgb(255,255,255)',
+                                           showgrid = TRUE,
+                                           showline = FALSE,
+                                           showticklabels = TRUE,
+                                           tickcolor = 'rgb(127,127,127)',
+                                           showticklabels = TRUE,
+                                           autotick = FALSE,
+                                           ticks = 'outside',
+                                           tickmode = 'linear',
+                                           tick0 = valRange$min,
+                                           dtick = valRange$range,
+                                           zeroline = FALSE),
+                              legend = list(legend = list(x = 100, y = 0.5)))
+  } else {
+  lineCh <- lineCh %>% layout(autosize = T,
+                              title = total_tit,
+                              paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
+                              hoverlabel = "right",
+                              xaxis = list(title = "Year",
+                                           gridcolor = 'rgb(255,255,255)',
+                                           showgrid = TRUE,
+                                           showline = FALSE,
+                                           showticklabels = TRUE,
+                                           tickcolor = 'rgb(127,127,127)',
+                                           ticks = 'outside',
+                                           zeroline = FALSE,
+                                           tick0 = minYear,
+                                           dtick = 2),
+                              yaxis = list(range = c(valRange$min, valRange$max),
+                                           title = seriesName,
+                                           gridcolor = 'rgb(255,255,255)',
+                                           showgrid = TRUE,
+                                           showline = FALSE,
+                                           showticklabels = TRUE,
+                                           tickcolor = 'rgb(127,127,127)',
+                                           showticklabels = TRUE,
+                                           autotick = FALSE,
+                                           ticks = 'outside',
+                                           tickmode = 'linear',
+                                           tick0 = valRange$min,
+                                           dtick = valRange$range,
+                                           tickformat = ",d",
+                                           zeroline = FALSE),
+                              legend = list(legend = list(x = 100, y = 0.5)))
+}
+
 
 
 outlist <- list("PLOT" = lineCh, "DATA" = f.ctyDGFIN)
