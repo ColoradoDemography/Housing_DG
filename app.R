@@ -62,7 +62,7 @@ ui <-
                                    
                                    # profile Unit dropdown
                                    selectInput("unit", "Select Location" ,choices=""),
-                                   selectizeInput("comp", "Select Data" ,choices=c("Total Housing Units", "Population","Persons Per Household")),
+                                   selectizeInput("comp", "Select Data" ,choices=c("Total Housing Units", "Population", "Persons Per Household")),
                                   #Output Content Checkboxes
                                    checkboxGroupInput("outChk", "Select the Das Gupta estimates(s):",
                                                       choices = c("Das Gupta 1" = "DG_1",
