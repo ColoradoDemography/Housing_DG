@@ -235,11 +235,11 @@ if(ctyfips  != "014") {
   
   if(type == "Persons Per Household") {
     f.ctyDGFIN$Q_t_txt  <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$Q_t,digits=5))
-    f.ctyDGFIN$DG_1_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_1,digits=5))
-    f.ctyDGFIN$DG_2_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_2,digits=5))
-    f.ctyDGFIN$DG_3_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_3,digits=5))
-    f.ctyDGFIN$DG_4_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_4,digits=5))
-    f.ctyDGFIN$DG_6_txt <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_6,digits=5))
+    f.ctyDGFIN$DG_1_txt <- paste0("Das Gupta 1<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_1,digits=5))
+    f.ctyDGFIN$DG_2_txt <- paste0("Das Gupta 2<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_2,digits=5))
+    f.ctyDGFIN$DG_3_txt <- paste0("Das Gupta 3<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_3,digits=5))
+    f.ctyDGFIN$DG_4_txt <- paste0("Das Gupta 4<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_4,digits=5))
+    f.ctyDGFIN$DG_6_txt <- paste0("Das Gupta 6<br>",f.ctyDGFIN$YEAR," ",signif(f.ctyDGFIN$DG_6,digits=5))
   } else {
     f.ctyDGFIN$Q_t_txt  <- paste0(type,"<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$Q_t))
     f.ctyDGFIN$DG_1_txt <- paste0("Das Gupta 1<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_1))
