@@ -1,6 +1,6 @@
-#' Colorado Demographic Profiles
-#' @author  Adam Bickford, Colorado State Demography Office, November 2017-March 2018
-#' Release Version 4.0 01/21/2021
+#' SDO Internal Housing unit Dashboard
+#' @author  Adam Bickford, Colorado State Demography Office
+#' Release Version 1.0 01/21/2021
 
 rm(list = ls())
 library(tidyverse, quietly=TRUE)
@@ -62,7 +62,7 @@ ui <-
                                    
                                    # profile Unit dropdown
                                    selectInput("unit", "Select Location" ,choices=""),
-                                   selectizeInput("comp", "Select Data" ,choices=c("Housing Units", "Population","Persons per Household")),
+                                   selectizeInput("comp", "Select Data" ,choices=c("Total Housing Units", "Population","Persons Per Household")),
                                   #Output Content Checkboxes
                                    checkboxGroupInput("outChk", "Select the Das Gupta estimates(s):",
                                                       choices = c("Das Gupta 1" = "DG_1",
