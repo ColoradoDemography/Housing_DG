@@ -109,7 +109,7 @@ f.ctyDG00 <- inner_join(f.ctyYr00, f.ctyConst00, by="CountyFIPS") %>%
 
 # Combining files
 if(ctyfips  != "014") {
-  f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00)
+  f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00[,2:12])
 } else {
   f.ctyDGFIN <-f.ctyDG00
 }
@@ -223,7 +223,7 @@ if(ctyfips  != "014") {
   
   # Combining files
   if(ctyfips  != "014") {
-    f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00)
+    f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00[,2:12])
   } else {
     f.ctyDGFIN <-f.ctyDG00
   }
