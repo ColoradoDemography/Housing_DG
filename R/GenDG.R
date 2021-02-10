@@ -256,8 +256,14 @@ minYear <- min(f.ctyDGFIN$YEAR)
 valRange <- as.data.frame(rangeVal(f.ctyDGFIN$Q_t, f.ctyDGFIN$DG_1, f.ctyDGFIN$DG_2, f.ctyDGFIN$DG_3, f.ctyDGFIN$DG_4, f.ctyDGFIN$DG_6))
 
 if(type == "Persons Per Household") {
+  valRange$max <- plyr::round_any(valRange$max, 0.01, f = ceiling)
   valRange$range <- (valRange$max - valRange$min)/10
 } else {
+  if(valRange$max < 1000) {
+     valRange$max <- plyr::round_any(valRange$max, 10, f = ceiling)
+  } else {
+    valRange$max <- plyr::round_any(valRange$max, 1000, f = ceiling)
+  }
   valRange$range <- round((valRange$max - valRange$min)/10,digits=0)
 }
 
@@ -291,7 +297,7 @@ if(type == "Persons Per Household") {
 }
 
 
-lineCh <- plot_ly(f.ctyDGFIN, x = ~YEAR, y = ~Q_t, type = 'scatter', mode = 'lines+markers',
+lineCh <- plot_ly(width=1000, height=500, f.ctyDGFIN, x = ~YEAR, y = ~Q_t, type = 'scatter', mode = 'lines+markers',
                   line = list(color = 'rgb(0,0,0)'),
                   marker = list(color = 'rgb(0,0,0)'),
                   name = seriesName,text = ~Q_t_txt, hoverinfo = 'text')    %>% 
@@ -338,7 +344,7 @@ lineCh <- lineCh %>% add_trace(y = ~DG_6, type = 'scatter', mode = 'lines+marker
 }
 
 if(type == "Persons Per Household") {
-  lineCh <- lineCh %>% layout(autosize = T,
+  lineCh <- lineCh %>% layout(margin = list(l = 50, r = 50, t = 75, b = 105),
                               title = total_tit,
                               paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
                               hoverlabel = "right",
@@ -368,7 +374,7 @@ if(type == "Persons Per Household") {
                                            zeroline = FALSE),
                               legend = list(legend = list(x = 100, y = 0.5)))
   } else {
-  lineCh <- lineCh %>% layout(autosize = T,
+  lineCh <- lineCh %>% layout(margin = list(l = 50, r = 50, t = 75, b = 105),
                               title = total_tit,
                               paper_bgcolor='rgb(255,255,255)', plot_bgcolor='rgb(229,229,229)',
                               hoverlabel = "right",
