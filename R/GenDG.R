@@ -261,6 +261,8 @@ if(type == "Persons Per Household") {
 } else {
   if(valRange$max < 1000) {
      valRange$max <- plyr::round_any(valRange$max, 10, f = ceiling)
+  } else if(valRange$max < 2500) {
+    valRange$max <- plyr::round_any(valRange$max, 100, f = ceiling)
   } else {
     valRange$max <- plyr::round_any(valRange$max, 1000, f = ceiling)
   }
