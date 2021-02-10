@@ -259,6 +259,7 @@ if(type == "Persons Per Household") {
   valRange$max <- plyr::round_any(valRange$max, 0.01, f = ceiling)
   valRange$range <- (valRange$max - valRange$min)/10
 } else {
+  valRange$min <- floor(valRange$min)
   if(valRange$max < 1000) {
      valRange$max <- plyr::round_any(valRange$max, 10, f = ceiling)
   } else if(valRange$max < 2500) {
