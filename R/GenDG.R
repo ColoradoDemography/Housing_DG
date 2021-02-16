@@ -9,7 +9,7 @@
 #' @export
 
 
-GenDG <- function(listID, type,  DGList) {  #Currently set to 1990-2000 will become a variable in a future version
+GenDG <- function(DBPool, listID, type,  DGList) {  #Currently set to 1990-2000 will become a variable in a future version
 
   ctyfips <- listID$ctyNum
   ctyname <- listID$ctyName
@@ -20,6 +20,10 @@ GenDG <- function(listID, type,  DGList) {  #Currently set to 1990-2000 will bec
 
   indata90_00 <- read_excel("data/City and County 1990 to 2000 Internal.xlsx", sheet=1)
   indata00_10 <- read_excel("data/CityandCounty_Estimates_MasterV2009.xlsx", sheet = 1)
+  incen90_00 <- read_excel("data/CO POP 9000.xlsx", sheet=1)
+  incen00_10 <- read_excel("data/CO INC 0010.xlsx", sheet=1)
+  
+  
   
 # Selecting range of data variable by the type value
 if(type == "Total Housing Units") {
@@ -47,6 +51,26 @@ if(type == "Total Housing Units") {
   }    
 # Reading County Total Housing Units data, with one year projection and Census estimate
 if(plfips == "") { 
+# Reading county Profile data
+  ctyProfileSQL <- paste0("SELECT countyfips, year, totalpopulation, totalhousingunits, householdsize FROM estimates.county_profiles WHERE countyfips = ",as.numeric(ctyfips)," AND year >= 1990;")
+  
+  f.ctyProfile <- dbGetQuery(DBPool, ctyProfileSQL)
+  if(type == "Total Housing Units") {
+    f.ctyProfile <- f.ctyProfile %>% select(year, totalhousingunits) %>% mutate(value = totalhousingunits)
+    f.ctyProfile$cens_txt <- paste0("SDO County Profile ",type,"<br>",f.ctyProfile$year," ",NumFmt(f.ctyProfile$totalhousingunits))
+  }
+ 
+  if(type == "Population") {
+    f.ctyProfile <- f.ctyProfile %>% select(year, totalpopulation) %>% mutate(value = totalpopulation)
+    f.ctyProfile$cens_txt <- paste0("SDO County Profile ",type,"<br>",f.ctyProfile$year," ",NumFmt(f.ctyProfile$totalpopulation))
+  } 
+  
+  if(type == "Persons Per Household") {
+    f.ctyProfile <- f.ctyProfile %>% select(year, householdsize) %>% mutate(value = householdsize)
+    f.ctyProfile$cens_txt <- paste0("SDO County Profile ",type,"<br>",f.ctyProfile$year," ",signif(f.ctyProfile$householdsize,digits=5))
+  } 
+  
+  
 # 1990-2000
 if(ctyfips != "014") { 
 
@@ -76,8 +100,6 @@ f.ctyDG90 <- inner_join(f.ctyYr90, f.ctyConst90, by="CountyFIPS") %>%
          DG_6 = Q_t * ((P_10/Q_10)^(t/10))
   ) %>%
   select(CountyFIPS, t, YEAR, Q_t,Q_10, P_0, P_10, DG_1:DG_6)
-
-}
 
 # 2000-2010
 f.ctyDG00 <- indata00_10 %>%
@@ -112,6 +134,31 @@ if(ctyfips  != "014") {
   f.ctyDGFIN <- bind_rows(f.ctyDG90,f.ctyDG00[,2:12])
 } else {
   f.ctyDGFIN <-f.ctyDG00
+}
+
+# Building Census Intercensal data
+
+if(ctyfips == "000") {
+  f.cens9000 <- incen90_00 %>% filter(CTYFIPS == ctyfips) %>%
+    gather(YEAR, value, JUL_2000:JUL_1990, factor_key=TRUE) %>%
+    mutate(YEAR = as.numeric(sub("JUL_","",YEAR))) %>%
+    arrange(YEAR)
+  
+} else {
+  f.cens9000 <- incen90_00 %>% filter(CTYFIPS == ctyfips) %>% filter(SUMLVL == "050") %>%
+    gather(YEAR, value, JUL_2000:JUL_1990, factor_key=TRUE) %>%
+    mutate(YEAR = as.numeric(sub("JUL_","",YEAR))) %>%
+    arrange(YEAR)
+}
+
+f.cens9000$cens_txt <- paste0("Census Intercensal Population<br>",f.cens9000$YEAR," ",NumFmt(f.cens9000$value))
+
+f.cens0010 <- incen00_10 %>% filter(CTYFIPS == ctyfips) %>% filter(TYPE == type) %>%
+  filter(YEAR %in% c("2000", "2001", "2002", "2003", "2004", "2005", "2006","2007", "2008", "2009", "JUL_2010")) %>%
+  mutate(YEAR = as.numeric(sub("JUL_","",YEAR))) %>%
+  arrange(YEAR)
+
+f.cens0010$cens_txt <- paste0("Census Intercensal ",type,"<br>",f.cens0010$YEAR," ",NumFmt(f.cens0010$value))
 }
 } else {  # Municipalities
 
@@ -249,17 +296,72 @@ if(ctyfips  != "014") {
     f.ctyDGFIN$DG_6_txt <- paste0("Das Gupta 6<br>",f.ctyDGFIN$YEAR," ",NumFmt(f.ctyDGFIN$DG_6))
     }
    
-# Creating Tick Ranges Year axis
+# Creating Tick Range Year axis
 
 minYear <- min(f.ctyDGFIN$YEAR)
 
-valRange <- as.data.frame(rangeVal(f.ctyDGFIN$Q_t, f.ctyDGFIN$DG_1, f.ctyDGFIN$DG_2, f.ctyDGFIN$DG_3, f.ctyDGFIN$DG_4, f.ctyDGFIN$DG_6))
+# Creating Tick Ranges Y-Axis  Based on combinations of 
+
+rngList <- list(f.ctyDGFIN$Q_t)
+list_id <- 1
+if("DG_1" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.ctyDGFIN$DG_1
+}
+
+if("DG_2" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.ctyDGFIN$DG_2
+}
+
+if("DG_3" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.ctyDGFIN$DG_3
+}
+
+if("DG_4" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.ctyDGFIN$DG_4
+}
+
+if("DG_6" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.ctyDGFIN$DG_6
+}
+
+if("CensPop90" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.cens9000$value
+}
+
+if("CensHu00" %in% DGList) {
+  list_id <- list_id + 1
+  rngList[[list_id]] <- f.cens0010$value
+}
+
+if("SDO" %in% DGList) {
+  list_id <- list_id + 1
+  if(type == "Total Housing Units") {
+    rngList[[list_id]] <- f.ctyProfile$totalhousingunits
+  } else {
+    rngList[[list_id]] <- f.ctyProfile$totalpopulation
+  }
+}
+
+valRange <- as.data.frame(rangeVal(rngList))
 
 if(type == "Persons Per Household") {
   valRange$max <- plyr::round_any(valRange$max, 0.01, f = ceiling)
   valRange$range <- (valRange$max - valRange$min)/10
 } else {
-  valRange$min <- floor(valRange$min)
+  if(valRange$min < 1000) {
+    valRange$min <- plyr::round_any(valRange$min, 10, f = floor)
+  } else if(valRange$min < 2500) {
+    valRange$min <- plyr::round_any(valRange$min, 100, f = floor)
+  } else {
+    valRange$min <- plyr::round_any(valRange$min, 1000, f = floor)
+  }
+  
   if(valRange$max < 1000) {
      valRange$max <- plyr::round_any(valRange$max, 10, f = ceiling)
   } else if(valRange$max < 2500) {
@@ -267,7 +369,7 @@ if(type == "Persons Per Household") {
   } else {
     valRange$max <- plyr::round_any(valRange$max, 1000, f = ceiling)
   }
-  valRange$range <- round((valRange$max - valRange$min)/10,digits=0)
+  valRange$range <- round((valRange$max - valRange$min)/15,digits=0)
 }
 
 
@@ -344,6 +446,27 @@ lineCh <- lineCh %>% add_trace(y = ~DG_6, type = 'scatter', mode = 'lines+marker
                                line = list(color = 'rgb(255,0,0)'),
                                marker = list(color = 'rgb(255,0,0)'),
                                name = "Das Gupta 6",text = ~DG_6_txt, hoverinfo = 'text')
+}
+
+if("CensPop90" %in% DGList && type == "Population") {
+  lineCh <- lineCh %>% add_trace(data=f.cens9000, x=~YEAR, y = ~value, type = 'scatter', mode = 'lines+markers',
+                                 line = list(color = 'rgb(0, 102, 0)'),
+                                 marker = list(color = 'rgb(0, 102, 0)'),
+                                 name = "Census Intercensal Population 1990-2000",text = ~cens_txt, hoverinfo = 'text')
+}
+
+if("CensHu00" %in% DGList) {
+  lineCh <- lineCh %>% add_trace(data=f.cens0010, x=~YEAR, y = ~value, type = 'scatter', mode = 'lines+markers',
+                                 line = list(color = 'rgb(102, 102, 51)'),
+                                 marker = list(color = 'rgb(102, 102, 51)'),
+                                 name = paste0(type,":<br>Census Intercensal Estimates 2000-2010"),text = ~cens_txt, hoverinfo = 'text')
+}
+
+if("SDO" %in% DGList) {
+  lineCh <- lineCh %>% add_trace(data=f.ctyProfile, x=~year, y = ~value, type = 'scatter', mode = 'lines+markers',
+                                 line = list(color = 'rgb(102, 51, 0)'),
+                                 marker = list(color = 'rgb(102, 51, 0)'),
+                                 name = paste0(type,":<br>SDO County Profile"),text = ~cens_txt, hoverinfo = 'text')
 }
 
 if(type == "Persons Per Household") {

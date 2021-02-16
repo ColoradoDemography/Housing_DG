@@ -1,8 +1,8 @@
 # rangeVal extracts the minimum and maximum from a range of input values
 
-rangeVal <- function(...) {
+rangeVal <- function(x) {
 
-  x <- list(...)
+
   firstval <- unlist(x[1])
   minValue <- min(firstval)
   maxValue <- max(firstval)
