@@ -62,16 +62,10 @@ ui <-
                                    
                                    # profile Unit dropdown
                                    selectInput("unit", "Select Location" ,choices=""),
-                                   selectizeInput("comp", "Select Data" ,choices=c("Total Housing Units", "Population", "Persons Per Household")),
-                                  #Output Content Checkboxes
-                                   checkboxGroupInput("outChk", "Select the Das Gupta estimates(s):",
-                                                      choices = c("Das Gupta 1" = "DG_1",
-                                                                  "Das Gupta 2" = "DG_2",
-                                                                  "Das Gupta 3" = "DG_3",
-                                                                  "Das Gupta 4" = "DG_4",
-                                                                  "Das Gupta 6" = "DG_6"
-                                                      ),
-                                                      selected =  c("DG_1","DG_2","DG_3","DG_4", "DG_5", "DG_6")
+                                   selectInput("comp", "Select Comparison" ,choices=c("Select Comparison","Total Housing Units", "Population", "Persons Per Household")),
+                                  #Output Content Checkboxes   
+                                   checkboxGroupInput("outChk", label=NULL,
+                                                      choices = NULL
                                    ),
                                    
                                    #Action Button
@@ -135,7 +129,40 @@ server <- function(input, output, session) {
     updateSelectInput(session, "unit", choices = outUnit)
   }))  #observeEvent input$level
   
-
+observeEvent(input$comp, ({
+  if(input$comp == "Select Comparison") {
+    updateCheckboxGroupInput(session, "outChk", label = NULL, choices = NULL)
+  }
+  if(input$comp == "Total Housing Units") {
+    updateCheckboxGroupInput(session,"outChk",label="Select Comparison Estimate(s)",
+                             choices = c("Das Gupta 1" = "DG_1",
+                                         "Das Gupta 2" = "DG_2",
+                                         "Das Gupta 3" = "DG_3",
+                                         "Das Gupta 4" = "DG_4",
+                                         "Das Gupta 6" = "DG_6",
+                                         "Census Intercensal Estimates 2000-2010" = "CensHu00",
+                                         "Data from SDO County Profile" = "SDO"))               
+  }
+  if(input$comp == "Population") {
+    updateCheckboxGroupInput(session,"outChk",label="Select Comparison Estimate(s)",
+                             choices = c("Das Gupta 1" = "DG_1",
+                                         "Das Gupta 2" = "DG_2",
+                                         "Das Gupta 3" = "DG_3",
+                                         "Das Gupta 4" = "DG_4",
+                                         "Das Gupta 6" = "DG_6",
+                                         "Census Intercensal Population Estimates 1990-2000" = "CensPop90",
+                                         "Census Intercensal Estimates 2000-2010" = "CensHu00",
+                                         "Data from SDO County Profile" = "SDO"))               
+  }
+  if(input$comp == "Persons Per Household") {
+    updateCheckboxGroupInput(session,"outChk",label="Select Comparison Estimate(s)",
+                             choices = c("Das Gupta 1" = "DG_1",
+                                         "Das Gupta 2" = "DG_2",
+                                         "Das Gupta 3" = "DG_3",
+                                         "Das Gupta 4" = "DG_4",
+                                         "Das Gupta 6" = "DG_6"))               
+  }
+}))
   
   # Event for click on profile button
   observeEvent(input$profile, {
@@ -144,7 +171,7 @@ server <- function(input, output, session) {
     #creating the input FIPS list to generate data
     if(input$unit == "") {
       lnError <- tags$h2("Please specify a Data Level and a Profile to display")
-      output$ui <- list(lnError)
+      output$outPlot <- htmlOutput(lnError)
     }  else {
         #Building fipslist  and read datafiles
         if(input$level == "Counties") {
@@ -159,7 +186,7 @@ server <- function(input, output, session) {
         #creating ids and output flags for multiple counties and small places
         idList <- chkID(lvl=input$level,fipslist= fipslist,plName=placeName,ctyList=CountyList, plList=PlaceList)
 
-        DG_Out <- GenDG(idList, input$comp, input$outChk)
+        DG_Out <- GenDG(DOLAPool, idList, input$comp, input$outChk)
    
     output$outPlot <- renderPlotly(DG_Out$PLOT)
 
