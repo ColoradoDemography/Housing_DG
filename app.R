@@ -160,7 +160,8 @@ observeEvent(input$comp, ({
                                          "Das Gupta 2" = "DG_2",
                                          "Das Gupta 3" = "DG_3",
                                          "Das Gupta 4" = "DG_4",
-                                         "Das Gupta 6" = "DG_6"))               
+                                         "Das Gupta 6" = "DG_6",
+                                         "Data from SDO County Profile" = "SDO"))               
   }
 }))
   
