@@ -343,16 +343,22 @@ if("SDO" %in% DGList) {
   list_id <- list_id + 1
   if(type == "Total Housing Units") {
     rngList[[list_id]] <- f.ctyProfile$totalhousingunits
-  } else {
+  } 
+  if(type == "Population") {
     rngList[[list_id]] <- f.ctyProfile$totalpopulation
   }
+  if(type == "Persons Per Household") {
+    rngList[[list_id]] <- f.ctyProfile$householdsize
+  }
+  
 }
 
 valRange <- as.data.frame(rangeVal(rngList))
 
 if(type == "Persons Per Household") {
+  valRange$min <- plyr::round_any((valRange$min - 0.04), 0.01, f = ceiling)
   valRange$max <- plyr::round_any(valRange$max, 0.01, f = ceiling)
-  valRange$range <- (valRange$max - valRange$min)/10
+  valRange$range <- round((valRange$max - valRange$min)/15,digits=2)
 } else {
   if(valRange$min < 1000) {
     valRange$min <- plyr::round_any(valRange$min, 10, f = floor)
